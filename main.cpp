@@ -11,6 +11,7 @@ using namespace std;
 class Village : public Place {
 public:
     Village(int xCoord,int yCoord):Place(xCoord,yCoord) {}
+    // Todo width, height
 
 };
 
@@ -18,26 +19,27 @@ public:
 
 class VillageFactory {
 public:
-    VillageFactory(WorldMap* worldMap) {
+    VillageFactory(WorldMap* worldMap, int seed) {
         theMap = worldMap;
+        int curSeed = seed >= 0 ? seed : time(NULL); // Use seed if provided, else random
+        srand(curSeed);
     }
 private:
-    int seed = -1;
     WorldMap* theMap;
     public:
     Village * build();
 };
 
 Village* VillageFactory::build() {
-    int curSeed = seed >= 0 ? seed : time(NULL); // Use seed if provided, else random
-    return new Village(0,0);
+
+    return new Village(rand() % (theMap->getWidth()-1), rand() % (theMap->getHeight()-1));
 }
 
 int main()
 {
     cout << "BEGIN PROGRAM" << endl;
     WorldMap theMap (3600, 3600);
-    VillageFactory villageFactory (&theMap);
+    VillageFactory villageFactory (&theMap, -1);
     Village *village = villageFactory.build();
     cout << village->toString() << endl;
     //cin >> age;

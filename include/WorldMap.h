@@ -6,12 +6,14 @@
 class Place {
 private:
     int x,y;
+    std::string name;
 public:
 //    Place();
     Place(int,int);
 
     int getX(){return x;}
     int getY(){return y;}
+    void add(Place place);
     std::string toString();
 };
 
@@ -21,6 +23,8 @@ class WorldMap
         WorldMap(int,int);
         virtual ~WorldMap();
         void add(Place place);
+        int getWidth(){return width;}
+        int getHeight(){return height;}
     protected:
     private:
         int width, height;

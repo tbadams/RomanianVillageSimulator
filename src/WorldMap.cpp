@@ -8,7 +8,7 @@ Place::Place(int xCoord, int yCoord)
 
 std::string Place::toString()
 {
-    return "\(" + std::to_string(x) + ", " + std::to_string(y) + "\)";
+    return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 }
 
 WorldMap::WorldMap(int mapWidth, int mapHeight)
