@@ -85,7 +85,7 @@ public:
     InitMenu(I, TRUE, TRUE);
 
     P = new NCursesPanel(1, n_items, LINES-1, 1);
-    boldframe("Demo", "Silly");
+    boldframe("Menu", "Menu");
     P->show();
   }
 
@@ -112,11 +112,13 @@ public:
   virtual void On_Menu_Init()
   {
     NCursesWindow W(::stdscr);
+    W.setpalette(COLOR_WHITE, COLOR_RED);
     P->move(0, 0);
     P->clrtoeol();
     for(int i=1; i<=count(); i++)
       P->addch('0' + i);
     P->bkgd(W.getbkgd());
+    P->setpalette(COLOR_WHITE, COLOR_BLACK);
     refresh();
   }
 
@@ -181,6 +183,7 @@ void TestApplication::title()
   titleWindow->bkgd(screen_titles());
   titleWindow->addstr(0, (titleWindow->cols() - len)/2, titleText);
   titleWindow->noutrefresh();
+  titleWindow->setpalette( COLOR_WHITE, COLOR_BLUE);
 }
 
 
