@@ -1,0 +1,13 @@
+libdir		= ../lib
+
+newdemo : obj/newdemo.o
+	g++  -o newdemo obj/newdemo.o -L../lib -lncurses++ -L../lib -lform -lmenu -lpanel -lncurses    -lutil    -DHAVE_CONFIG_H -I../c++ -I../include  -D_GNU_SOURCE -D_DEFAULT_SOURCE -DNDEBUG -O2
+
+obj/newdemo.o : newdemo.cc \
+	${libdir}/libncurses++.a
+	# TODO Other dependencies
+	g++  -c newdemo.cc -o obj/newdemo.o    -DHAVE_CONFIG_H -I../c++ -I../include  -D_GNU_SOURCE -D_DEFAULT_SOURCE -DNDEBUG -O2
+
+clean : 
+	rm newdemo|true
+	rm obj/newdemo.o | true

@@ -1,0 +1,8 @@
+libdir		= ../lib
+
+mydemo.o : mydemo.cc \
+	${libdir}/libncurses++.a
+	# TODO Other dependencies
+	g++  -c mydemo.cc -o ../objects/mydemo.o -L../lib -lncurses++ -L../lib -lform -lmenu -lpanel -lncurses    -lutil    -DHAVE_CONFIG_H -I../c++ -I. -I../include  -D_GNU_SOURCE -D_DEFAULT_SOURCE -DNDEBUG -O2
+	# TODO Different target??
+	g++  -o mydemo ../objects/mydemo.o -L../lib -lncurses++ -L../lib -lform -lmenu -lpanel -lncurses    -lutil    -DHAVE_CONFIG_H -I../c++ -I. -I../include  -D_GNU_SOURCE -D_DEFAULT_SOURCE -DNDEBUG -O2
