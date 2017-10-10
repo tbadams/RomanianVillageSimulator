@@ -1,13 +1,16 @@
 # depslib dependency file v1.0
-1507321553 source:/Users/tadams/git/rom/RVS/main.cpp
+1507611861 source:/Users/tadams/git/rom/RVS/main.cpp
 	<iostream>
 	<string.h>
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
+	<cursesapp.h>
+	<cursesm.h>
+	<cursesf.h>
 	"WorldMap.h"
 
-1507262376 source:/Users/tadams/git/rom/RVS/src/WorldMap.cpp
+1507611355 source:/Users/tadams/git/rom/RVS/src/WorldMap.cpp
 	"WorldMap.h"
 
 1507263858 /Users/tadams/git/rom/RVS/include/WorldMap.h

@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <cursesapp.h>
+#include <cursesm.h>
+#include <cursesf.h>
+
 #include "WorldMap.h"
 
 using namespace std;
