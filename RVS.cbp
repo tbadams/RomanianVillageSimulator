@@ -12,9 +12,16 @@
 				<Option type="1" />
 				<Option compiler="clang" />
 				<Compiler>
+					<Add option="-std=c++11" />
 					<Add option="-g" />
-					<Add directory="include" />
 				</Compiler>
+				<Linker>
+					<Add library="lib/ncurses/libform.a" />
+					<Add library="lib/ncurses/libmenu.a" />
+					<Add library="lib/ncurses/libncurses.a" />
+					<Add library="lib/ncurses/libncurses++.a" />
+					<Add library="lib/ncurses/libpanel.a" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/RVS" prefix_auto="1" extension_auto="1" />
@@ -27,13 +34,24 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="lib/ncurses/libform.a" />
+					<Add library="lib/ncurses/libmenu.a" />
+					<Add library="lib/ncurses/libncurses.a" />
+					<Add library="lib/ncurses/libncurses++.a" />
+					<Add library="lib/ncurses/libpanel.a" />
 				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Weverything" />
 			<Add option="-fexceptions" />
+			<Add directory="include" />
+			<Add directory="lib/ncurses/c++" />
+			<Add directory="lib/ncurses/include" />
 		</Compiler>
+		<Linker>
+			<Add directory="lib/ncurses" />
+		</Linker>
 		<Unit filename="include/WorldMap.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/WorldMap.cpp" />
