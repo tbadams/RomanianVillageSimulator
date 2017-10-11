@@ -67,9 +67,10 @@ private:
 
 public:
   MyMenu ()
-    : NCursesMenu (n_items+2, 8, (lines()-10)/2, (cols()-10)/2),
+    : NCursesMenu (lines() - 1, 16, 0, 0),
       P(0), I(0),
       u(0)
+      // TODO Expose constructor!
   {
     u = new UserData(1);
     I = new NCursesMenuItem*[1+n_items];

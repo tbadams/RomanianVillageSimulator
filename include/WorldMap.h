@@ -6,9 +6,9 @@
 class Place {
 private:
     int x,y;
+    // TODO Size?
     std::string name;
 public:
-//    Place();
     Place(int,int);
 
     int getX(){return x;}

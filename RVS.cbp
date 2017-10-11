@@ -12,8 +12,10 @@
 				<Option type="1" />
 				<Option compiler="clang" />
 				<Compiler>
+					<Add option="-Weverything" />
 					<Add option="-std=c++11" />
 					<Add option="-g" />
+					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add library="lib/ncurses/libform.a" />
@@ -52,8 +54,18 @@
 		<Linker>
 			<Add directory="lib/ncurses" />
 		</Linker>
+		<Unit filename="include/Actor.h" />
 		<Unit filename="include/WorldMap.h" />
+		<Unit filename="lib/ncurses/c++/cursesapp.h" />
+		<Unit filename="lib/ncurses/c++/cursesf.h" />
+		<Unit filename="lib/ncurses/c++/cursesm.h" />
+		<Unit filename="lib/ncurses/c++/cursesp.h" />
+		<Unit filename="lib/ncurses/c++/cursesw.h" />
+		<Unit filename="lib/ncurses/c++/cursslk.h" />
+		<Unit filename="lib/ncurses/c++/etip.h" />
+		<Unit filename="lib/ncurses/c++/internal.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="src/Actor.cpp" />
 		<Unit filename="src/WorldMap.cpp" />
 		<Extensions>
 			<code_completion />
