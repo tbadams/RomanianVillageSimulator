@@ -63,7 +63,7 @@ private:
   NCursesPanel* P;
   NCursesMenuItem** I;
   UserData *u;
-  #define n_items 2
+  #define n_items 3
 
 public:
   MyMenu ()
@@ -76,12 +76,12 @@ public:
     I = new NCursesMenuItem*[1+n_items];
     I[0] = new PassiveItem("One");
     I[1] = new PassiveItem("Two");
-//    I[2] = new MyAction<UserData> ("Silly", u);
+    I[2] = new NCursesMenuItem("Three");
 //    I[3] = new FormAction("Form");
 //    I[4] = new PadAction("Pad");
 //    I[5] = new ScanAction("Scan");
 //    I[6] = new QuitItem();
-    I[2] = new NCursesMenuItem(); // Terminating empty item
+    I[n_items] = new NCursesMenuItem(); // Terminating empty item
 
     InitMenu(I, TRUE, TRUE);
 
@@ -113,13 +113,11 @@ public:
   virtual void On_Menu_Init()
   {
     NCursesWindow W(::stdscr);
-    W.setpalette(COLOR_WHITE, COLOR_RED);
     P->move(0, 0);
     P->clrtoeol();
     for(int i=1; i<=count(); i++)
       P->addch('0' + i);
     P->bkgd(W.getbkgd());
-    P->setpalette(COLOR_WHITE, COLOR_BLACK);
     refresh();
   }
 
@@ -184,14 +182,22 @@ void TestApplication::title()
   titleWindow->bkgd(screen_titles());
   titleWindow->addstr(0, (titleWindow->cols() - len)/2, titleText);
   titleWindow->noutrefresh();
-  titleWindow->setpalette( COLOR_WHITE, COLOR_BLUE);
 }
 
 
 int TestApplication::run()
 {
+//    init_pair(0, COLOR_MAGENTA, COLOR_RED); // Unknown
+//    init_pair(1, COLOR_MAGENTA, COLOR_RED); // Unknown
+    init_pair(2, COLOR_YELLOW, COLOR_BLACK); // Selection cursor in Menu
+    init_pair(3, COLOR_WHITE, COLOR_BLACK); // Unselectable menu items // TODO Color rest of menu??
+    init_pair(4, COLOR_WHITE, COLOR_RED); // Soft key labels
+    init_pair(5, COLOR_WHITE, COLOR_RED); // Main window
+    init_pair(6, COLOR_WHITE, COLOR_BLUE); // Title Bar
+
   MyMenu M;
   M();
+  mystd.refresh();
   return 0;
 }
 
