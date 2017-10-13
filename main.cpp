@@ -7,6 +7,7 @@
 #include <cursesapp.h>
 #include <cursesm.h>
 #include <cursesf.h>
+#include <menu.h>
 
 #include "WorldMap.h"
 
@@ -39,6 +40,48 @@ Village* VillageFactory::build() {
     return new Village(rand() % (theMap->getWidth()-1), rand() % (theMap->getHeight()-1));
 }
 
+class ScanAction : public NCursesMenuItem
+{
+public:
+  ScanAction(const char* s) : NCursesMenuItem(s) {
+  }
+
+  bool action() {
+    NCursesPanel *mystd = new NCursesPanel();
+
+    NCursesPanel *w = new NCursesPanel(mystd->lines() - 2, mystd->cols() - 2, 1, 1);
+    w->box();
+    w->bkgd(' '|COLOR_PAIR(1));
+    w->refresh();
+
+    NCursesPanel *s = new NCursesPanel(w->lines() - 6, w->cols() - 6, 3, 3);
+        s->setpalette(COLOR_GREEN, COLOR_YELLOW);
+    s->scrollok(TRUE);
+    ::echo(); // Probably temprarily enable printing input chars
+
+    s->printw("Enter decimal integers.  The running total will be shown\n");
+    int nvalue = -1;
+    int result = 0;
+    while (nvalue != 0) {
+      nvalue = 0;
+      s->scanw("%d", &nvalue);
+      if (nvalue != 0) {
+        s->printw("%d: ", result += nvalue);
+      }
+      s->refresh();
+              s->setpalette(COLOR_GREEN, COLOR_YELLOW);
+    }
+    s->printw("\nPress any key to continue...");
+    s->getch(); // get input
+
+    delete s;
+    delete w;
+    delete mystd;
+    ::noecho(); // re-enable no echoing
+    return FALSE; // dunno why false
+  }
+};
+
 class UserData
 {
 private:
@@ -46,6 +89,45 @@ private:
 public:
   UserData(int x) : u(x) {}
   int sleeptime() const { return u; }
+};
+
+class PadAction : public NCursesMenuItem
+{
+public:
+  PadAction(const char* s) : NCursesMenuItem(s) {
+  }
+
+  bool action() {
+    const int GRIDSIZE = 3;
+    const int PADSIZE  = 200;
+    unsigned gridcount = 0;
+
+    NCursesPanel mystd;
+    NCursesPanel P(mystd.lines()-2, mystd.cols()-2, 1, 1);
+    NCursesFramedPad FP(P, PADSIZE, PADSIZE);
+
+    for (int i=0; i < PADSIZE; i++) {
+      for (int j=0; j < PADSIZE; j++) {
+        if (i % GRIDSIZE == 0 && j % GRIDSIZE == 0) {
+          if (i==0 || j==0)
+            FP.addch('+');
+          else
+            FP.addch(static_cast<chtype>('A' + (gridcount++ % 26)));
+        }
+        else if (i % GRIDSIZE == 0)
+          FP.addch('-');
+        else if (j % GRIDSIZE == 0)
+          FP.addch('|');
+        else
+          FP.addch(' ');
+      }
+    }
+
+    P.label("Pad Demo", NULL);
+    FP();
+    P.clear();
+    return FALSE;
+  }
 };
 
 class PassiveItem : public NCursesMenuItem
@@ -63,7 +145,7 @@ private:
   NCursesPanel* P;
   NCursesMenuItem** I;
   UserData *u;
-  #define n_items 3
+  #define n_items 6
 
 public:
   MyMenu ()
@@ -77,9 +159,9 @@ public:
     I[0] = new PassiveItem("One");
     I[1] = new PassiveItem("Two");
     I[2] = new NCursesMenuItem("Three");
-//    I[3] = new FormAction("Form");
-//    I[4] = new PadAction("Pad");
-//    I[5] = new ScanAction("Scan");
+    I[3] = new NCursesMenuItem("Form"); // FormAction
+    I[4] = new PadAction("Pad");
+    I[5] = new ScanAction("Scan");
 //    I[6] = new QuitItem();
     I[n_items] = new NCursesMenuItem(); // Terminating empty item
 
@@ -197,7 +279,6 @@ int TestApplication::run()
 
   MyMenu M;
   M();
-  mystd.refresh();
   return 0;
 }
 
