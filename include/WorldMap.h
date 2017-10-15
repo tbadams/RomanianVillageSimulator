@@ -2,6 +2,7 @@
 #define WORLDMAP_H
 #include <unordered_map>
 #include <string>
+#include "Actor.h"
 
 class Place {
 private:
@@ -25,9 +26,11 @@ class WorldMap
         void add(Place place);
         int getWidth(){return width;}
         int getHeight(){return height;}
+        Scheduler getScheduler() {return scheduler;}
     protected:
     private:
         int width, height;
+        Scheduler scheduler;
 };
 
 

@@ -266,9 +266,23 @@ void TestApplication::title()
   titleWindow->noutrefresh();
 }
 
+void initWorld() {
+    cout << "BEGIN PROGRAM" << endl;
+    WorldMap theMap (3600, 3600);
+    VillageFactory villageFactory (&theMap, -1);
+    Village *village = villageFactory.build();
+    cout << village->toString() << endl;
+    //cin >> age;
+}
 
 int TestApplication::run()
 {
+    // Simulations
+    initWorld();
+
+    NCursesPanel mystd;
+    init_color(COLOR_ORANGE, 999, 500, 0);
+    init_pair(7, COLOR_WHITE, COLOR_ORANGE);
 //    init_pair(0, COLOR_MAGENTA, COLOR_RED); // Unknown
 //    init_pair(1, COLOR_MAGENTA, COLOR_RED); // Unknown
     init_pair(2, COLOR_YELLOW, COLOR_BLACK); // Selection cursor in Menu
@@ -276,7 +290,6 @@ int TestApplication::run()
     init_pair(4, COLOR_WHITE, COLOR_RED); // Soft key labels
     init_pair(5, COLOR_WHITE, COLOR_RED); // Main window
     init_pair(6, COLOR_WHITE, COLOR_BLUE); // Title Bar
-
   MyMenu M;
   M();
   return 0;
@@ -287,13 +300,10 @@ int TestApplication::run()
 //
 static TestApplication *Demo = new TestApplication();
 
+
+
 //int main()
 //{
-//    cout << "BEGIN PROGRAM" << endl;
-//    WorldMap theMap (3600, 3600);
-//    VillageFactory villageFactory (&theMap, -1);
-//    Village *village = villageFactory.build();
-//    cout << village->toString() << endl;
-//    //cin >> age;
+
 //    return 0;
 //}
