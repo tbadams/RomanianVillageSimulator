@@ -13,6 +13,19 @@
 
 using namespace std;
 
+// Can define 256 colors
+/*
+9 - bright red
+10 bright green
+11 Br. Yellow
+12 Br. Blue
+13 Br. Magenta
+14 Br. Cyan
+15 Br. White
+16 blaack
+*/
+const int COLOR_ORANGE = 9;
+
 class Village : public Place {
 public:
     Village(int xCoord,int yCoord):Place(xCoord,yCoord) {}
@@ -225,6 +238,19 @@ public:
     P->attroff(A_REVERSE);
     P->printw("%1d", 1+item.index());
     refresh();
+  }
+
+  virtual int virtualize( int c) {
+        switch(c) {
+            case KEY_F(1):
+            {
+                ScanAction scanAction ("wangs");
+                scanAction.action();
+//                return (MAX_COMMAND + 1);
+                break;
+            }
+        }
+        return NCursesMenu::virtualize(c);
   }
 };
 
