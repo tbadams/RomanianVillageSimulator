@@ -33,8 +33,6 @@ public:
 
 };
 
-
-
 class VillageFactory {
 public:
     VillageFactory(WorldMap* worldMap, int seed) {
@@ -141,6 +139,12 @@ public:
     P.clear();
     return FALSE;
   }
+};
+
+class ChildPad : public NCursesFramedPad {
+    public:
+    ChildPad(NCursesWindow& win, int nlines, int ncols) : NCursesFramedPad(win, nlines, ncols){}
+
 };
 
 class PassiveItem : public NCursesMenuItem
@@ -316,8 +320,24 @@ int TestApplication::run()
     init_pair(4, COLOR_WHITE, COLOR_RED); // Soft key labels
     init_pair(5, COLOR_WHITE, COLOR_RED); // Main window
     init_pair(6, COLOR_WHITE, COLOR_BLUE); // Title Bar
-  MyMenu M;
-  M();
+
+    // Time panel
+    NCursesPanel *timePanel = new NCursesPanel(8, 20, 10, 3);
+      timePanel->bkgd(' '|COLOR_PAIR(1));
+    mystd.refresh();
+    NCursesPanel pane;
+
+    // Event Window
+    const int PAD_LENGTH = 250;
+    NCursesPanel P(mystd.lines()-2, mystd.cols()-2, 1, 1);
+    ChildPad FP(P, PAD_LENGTH, mystd.cols() - 3);
+    P.label("Events", NULL);
+    FP();
+    while(true) {
+
+    }
+//  MyMenu M;
+//  M();
   return 0;
 }
 
