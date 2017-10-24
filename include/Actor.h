@@ -5,6 +5,18 @@
 
 class Scheduler;
 
+// Represents a thing that happened in the world (usually)
+class Event {
+    // TODO Should eventually use funtion pointer type paradigm to generate text from data
+    // TODO Timestamp???
+public:
+    Event(std::string);
+    std::string getMessage();
+private:
+    std::string baseMessage;
+
+};
+
 class Actor {
     friend class Scheduler;
     public:
@@ -21,6 +33,11 @@ class Actor {
         void setNextAct(long);
 };
 
+class EventManager {
+    // TODO way more accessor options; query/filter...I guess mostly that.
+
+};
+
 class Scheduler
 {
 public:
@@ -30,6 +47,7 @@ public:
     void next();
     void until(long absoluteTime);
     void goFor(long duration);
+    void postEvent(const Event& event);
 
 private:
     long curTime; // TODO necessary? float?

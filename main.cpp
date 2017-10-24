@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <thread>
 
 #include <cursesapp.h>
 #include <cursesm.h>
@@ -10,6 +11,10 @@
 #include <menu.h>
 
 #include "WorldMap.h"
+
+#ifndef __MINGW32__
+extern "C" unsigned int sleep(unsigned int); // TODO Make portable??
+#endif
 
 using namespace std;
 
@@ -23,8 +28,11 @@ using namespace std;
 14 Br. Cyan
 15 Br. White
 16 blaack
+17 - ? blues
 */
 const int COLOR_ORANGE = 9;
+
+void doStuff(int key);
 
 class Village : public Place {
 public:
@@ -51,95 +59,119 @@ Village* VillageFactory::build() {
     return new Village(rand() % (theMap->getWidth()-1), rand() % (theMap->getHeight()-1));
 }
 
-class ScanAction : public NCursesMenuItem
-{
-public:
-  ScanAction(const char* s) : NCursesMenuItem(s) {
-  }
-
-  bool action() {
-    NCursesPanel *mystd = new NCursesPanel();
-
-    NCursesPanel *w = new NCursesPanel(mystd->lines() - 2, mystd->cols() - 2, 1, 1);
-    w->box();
-    w->bkgd(' '|COLOR_PAIR(1));
-    w->refresh();
-
-    NCursesPanel *s = new NCursesPanel(w->lines() - 6, w->cols() - 6, 3, 3);
-        s->setpalette(COLOR_GREEN, COLOR_YELLOW);
-    s->scrollok(TRUE);
-    ::echo(); // Probably temprarily enable printing input chars
-
-    s->printw("Enter decimal integers.  The running total will be shown\n");
-    int nvalue = -1;
-    int result = 0;
-    while (nvalue != 0) {
-      nvalue = 0;
-      s->scanw("%d", &nvalue);
-      if (nvalue != 0) {
-        s->printw("%d: ", result += nvalue);
-      }
-      s->refresh();
-              s->setpalette(COLOR_GREEN, COLOR_YELLOW);
-    }
-    s->printw("\nPress any key to continue...");
-    s->getch(); // get input
-
-    delete s;
-    delete w;
-    delete mystd;
-    ::noecho(); // re-enable no echoing
-    return FALSE; // dunno why false
-  }
-};
-
-class UserData
-{
+class DayTime : public Actor {
 private:
-  int u;
+    bool sunIsUp;
 public:
-  UserData(int x) : u(x) {}
-  int sleeptime() const { return u; }
-};
-
-class PadAction : public NCursesMenuItem
-{
-public:
-  PadAction(const char* s) : NCursesMenuItem(s) {
-  }
-
-  bool action() {
-    const int GRIDSIZE = 3;
-    const int PADSIZE  = 200;
-    unsigned gridcount = 0;
-
-    NCursesPanel mystd;
-    NCursesPanel P(mystd.lines()-2, mystd.cols()-2, 1, 1);
-    NCursesFramedPad FP(P, PADSIZE, PADSIZE);
-
-    for (int i=0; i < PADSIZE; i++) {
-      for (int j=0; j < PADSIZE; j++) {
-        if (i % GRIDSIZE == 0 && j % GRIDSIZE == 0) {
-          if (i==0 || j==0)
-            FP.addch('+');
-          else
-            FP.addch(static_cast<chtype>('A' + (gridcount++ % 26)));
+    // TODO Set up state.
+    void act(Scheduler scheduler) {
+        std:string msg;
+        if(!sunIsUp) {
+            msg = "The sun rises.";
+        } else {
+            msg = "The sun sets.";
         }
-        else if (i % GRIDSIZE == 0)
-          FP.addch('-');
-        else if (j % GRIDSIZE == 0)
-          FP.addch('|');
-        else
-          FP.addch(' ');
-      }
+        sunIsUp = !sunIsUp;
+        Event event (msg);
+        scheduler.postEvent(event);
+        scheduler.add(*this, 60 * 24);
     }
-
-    P.label("Pad Demo", NULL);
-    FP();
-    P.clear();
-    return FALSE;
-  }
 };
+
+
+/*
+FRONT END
+*/
+
+//class ScanAction : public NCursesMenuItem
+//{
+//public:
+//  ScanAction(const char* s) : NCursesMenuItem(s) {
+//  }
+//
+//  bool action() {
+//    NCursesPanel *mystd = new NCursesPanel();
+//
+//    NCursesPanel *w = new NCursesPanel(mystd->lines() - 2, mystd->cols() - 2, 1, 1);
+//    w->box();
+//    w->bkgd(' '|COLOR_PAIR(1));
+//    w->refresh();
+//
+//    NCursesPanel *s = new NCursesPanel(w->lines() - 6, w->cols() - 6, 3, 3);
+//        s->setpalette(COLOR_GREEN, COLOR_YELLOW);
+//    s->scrollok(TRUE);
+//    ::echo(); // Probably temprarily enable printing input chars
+//
+//    s->printw("Enter decimal integers.  The running total will be shown\n");
+//    int nvalue = -1;
+//    int result = 0;
+//    while (nvalue != 0) {
+//      nvalue = 0;
+//      s->scanw("%d", &nvalue);
+//      if (nvalue != 0) {
+//        s->printw("%d: ", result += nvalue);
+//      }
+//      s->refresh();
+//              s->setpalette(COLOR_GREEN, COLOR_YELLOW);
+//    }
+//    s->printw("\nPress any key to continue...");
+//    s->getch(); // get input
+//
+//    delete s;
+//    delete w;
+//    delete mystd;
+//    ::noecho(); // re-enable no echoing
+//    return FALSE; // dunno why false
+//  }
+//};
+//
+//class UserData
+//{
+//private:
+//  int u;
+//public:
+//  UserData(int x) : u(x) {}
+//  int sleeptime() const { return u; }
+//};
+//
+//class PadAction : public NCursesMenuItem
+//{
+//public:
+//  PadAction(const char* s) : NCursesMenuItem(s) {
+//  }
+//
+//  bool action() {
+//    const int GRIDSIZE = 3;
+//    const int PADSIZE  = 200;
+//    unsigned gridcount = 0;
+//
+//    NCursesPanel mystd;
+//    NCursesPanel P(mystd.lines()-2, mystd.cols()-2, 1, 1);
+//    NCursesFramedPad FP(P, PADSIZE, PADSIZE);
+//
+//    for (int i=0; i < PADSIZE; i++) {
+//      for (int j=0; j < PADSIZE; j++) {
+//        if (i % GRIDSIZE == 0 && j % GRIDSIZE == 0) {
+//          if (i==0 || j==0)
+//            FP.addch('+');
+//          else
+//            FP.addch(static_cast<chtype>('A' + (gridcount++ % 26)));
+//        }
+//        else if (i % GRIDSIZE == 0)
+//          FP.addch('-');
+//        else if (j % GRIDSIZE == 0)
+//          FP.addch('|');
+//        else
+//          FP.addch(' ');
+//      }
+//    }
+//
+//    P.label("Pad Demo", NULL);
+//    FP();
+//    P.clear();
+//    return FALSE;
+//  }
+//};
 
 class ChildPad : public NCursesFramedPad {
     public:
@@ -147,116 +179,129 @@ class ChildPad : public NCursesFramedPad {
 
 };
 
-class PassiveItem : public NCursesMenuItem
-{
-public:
-  PassiveItem(const char* text) : NCursesMenuItem(text) {
-    options_off(O_SELECTABLE);
-  }
+// TODO When I try to subclass ChildPad window doesn't appear.
+class EventPad : public NCursesFramedPad {
+    public:
+        EventPad(NCursesWindow& win, int nlines, int ncols): NCursesFramedPad(win, nlines, ncols){}
+
+//        void operator ()(void) {
+//            bool quit = false;
+//            while(!quit) {
+//
+//            }
+//        }
 };
 
-
-class MyMenu : public NCursesMenu
-{
-private:
-  NCursesPanel* P;
-  NCursesMenuItem** I;
-  UserData *u;
-  #define n_items 6
-
-public:
-  MyMenu ()
-    : NCursesMenu (lines() - 1, 16, 0, 0),
-      P(0), I(0),
-      u(0)
-      // TODO Expose constructor!
-  {
-    u = new UserData(1);
-    I = new NCursesMenuItem*[1+n_items];
-    I[0] = new PassiveItem("One");
-    I[1] = new PassiveItem("Two");
-    I[2] = new NCursesMenuItem("Three");
-    I[3] = new NCursesMenuItem("Form"); // FormAction
-    I[4] = new PadAction("Pad");
-    I[5] = new ScanAction("Scan");
-//    I[6] = new QuitItem();
-    I[n_items] = new NCursesMenuItem(); // Terminating empty item
-
-    InitMenu(I, TRUE, TRUE);
-
-    P = new NCursesPanel(1, n_items, LINES-1, 1);
-    boldframe("Menu", "Menu");
-    P->show();
-  }
-
-  MyMenu& operator=(const MyMenu& rhs)
-  {
-    if (this != &rhs) {
-      *this = rhs;
-    }
-    return *this;
-  }
-
-  MyMenu(const MyMenu& rhs)
-    : NCursesMenu(rhs), P(0), I(0), u(0)
-  {
-  }
-
-  ~MyMenu()
-  {
-    P->hide();
-    delete P;
-    delete u;
-  }
-
-  virtual void On_Menu_Init()
-  {
-    NCursesWindow W(::stdscr);
-    P->move(0, 0);
-    P->clrtoeol();
-    for(int i=1; i<=count(); i++)
-      P->addch('0' + i);
-    P->bkgd(W.getbkgd());
-    refresh();
-  }
-
-  virtual void On_Menu_Termination()
-  {
-    P->move(0, 0);
-    P->clrtoeol();
-    refresh();
-  }
-
-  virtual void On_Item_Init(NCursesMenuItem& item)
-  {
-    P->move(0, item.index());
-    P->attron(A_REVERSE);
-    P->printw("%1d", 1+item.index());
-    P->attroff(A_REVERSE);
-    refresh();
-  }
-
-  virtual void On_Item_Termination(NCursesMenuItem& item)
-  {
-    P->move(0, item.index());
-    P->attroff(A_REVERSE);
-    P->printw("%1d", 1+item.index());
-    refresh();
-  }
-
-  virtual int virtualize( int c) {
-        switch(c) {
-            case KEY_F(1):
-            {
-                ScanAction scanAction ("wangs");
-                scanAction.action();
-//                return (MAX_COMMAND + 1);
-                break;
-            }
-        }
-        return NCursesMenu::virtualize(c);
-  }
-};
+//class PassiveItem : public NCursesMenuItem
+//{
+//public:
+//  PassiveItem(const char* text) : NCursesMenuItem(text) {
+//    options_off(O_SELECTABLE);
+//  }
+//};
+//
+//
+//class MyMenu : public NCursesMenu
+//{
+//private:
+//  NCursesPanel* P;
+//  NCursesMenuItem** I;
+//  UserData *u;
+//  #define n_items 6
+//
+//public:
+//  MyMenu ()
+//    : NCursesMenu (lines() - 1, 16, 0, 0),
+//      P(0), I(0),
+//      u(0)
+//      // TODO Expose constructor!
+//  {
+//    u = new UserData(1);
+//    I = new NCursesMenuItem*[1+n_items];
+//    I[0] = new PassiveItem("One");
+//    I[1] = new PassiveItem("Two");
+//    I[2] = new NCursesMenuItem("Three");
+//    I[3] = new NCursesMenuItem("Form"); // FormAction
+//    I[4] = new PadAction("Pad");
+//    I[5] = new ScanAction("Scan");
+////    I[6] = new QuitItem();
+//    I[n_items] = new NCursesMenuItem(); // Terminating empty item
+//
+//    InitMenu(I, TRUE, TRUE);
+//
+//    P = new NCursesPanel(1, n_items, LINES-1, 1);
+//    boldframe("Menu", "Menu");
+//    P->show();
+//  }
+//
+//  MyMenu& operator=(const MyMenu& rhs)
+//  {
+//    if (this != &rhs) {
+//      *this = rhs;
+//    }
+//    return *this;
+//  }
+//
+//  MyMenu(const MyMenu& rhs)
+//    : NCursesMenu(rhs), P(0), I(0), u(0)
+//  {
+//  }
+//
+//  ~MyMenu()
+//  {
+//    P->hide();
+//    delete P;
+//    delete u;
+//  }
+//
+//  virtual void On_Menu_Init()
+//  {
+//    NCursesWindow W(::stdscr);
+//    P->move(0, 0);
+//    P->clrtoeol();
+//    for(int i=1; i<=count(); i++)
+//      P->addch('0' + i);
+//    P->bkgd(W.getbkgd());
+//    refresh();
+//  }
+//
+//  virtual void On_Menu_Termination()
+//  {
+//    P->move(0, 0);
+//    P->clrtoeol();
+//    refresh();
+//  }
+//
+//  virtual void On_Item_Init(NCursesMenuItem& item)
+//  {
+//    P->move(0, item.index());
+//    P->attron(A_REVERSE);
+//    P->printw("%1d", 1+item.index());
+//    P->attroff(A_REVERSE);
+//    refresh();
+//  }
+//
+//  virtual void On_Item_Termination(NCursesMenuItem& item)
+//  {
+//    P->move(0, item.index());
+//    P->attroff(A_REVERSE);
+//    P->printw("%1d", 1+item.index());
+//    refresh();
+//  }
+//
+//  virtual int virtualize( int c) {
+//        switch(c) {
+//            case KEY_F(1):
+//            {
+//                ScanAction scanAction ("wangs");
+//                scanAction.action();
+////                return (MAX_COMMAND + 1);
+//                break;
+//            }
+//        }
+//        return NCursesMenu::virtualize(c);
+//  }
+//};
 
 class TestApplication : public NCursesApplication
 {
@@ -271,7 +316,7 @@ protected:
 public:
   TestApplication() : NCursesApplication(TRUE) {
   }
-
+    void virtualize(int);
   int run();
 };
 
@@ -286,6 +331,12 @@ public:
 //  }
 //}
 
+void TestApplication::virtualize(int c) {
+    switch(c) {
+
+    }
+}
+
 void TestApplication::title()
 {
   const char * const titleText = "Romanian Village Simulator";
@@ -296,23 +347,18 @@ void TestApplication::title()
   titleWindow->noutrefresh();
 }
 
-void initWorld() {
+int TestApplication::run()
+{
+    // Simulations
     cout << "BEGIN PROGRAM" << endl;
     WorldMap theMap (3600, 3600);
     VillageFactory villageFactory (&theMap, -1);
     Village *village = villageFactory.build();
     cout << village->toString() << endl;
-    //cin >> age;
-}
-
-int TestApplication::run()
-{
-    // Simulations
-    initWorld();
 
     NCursesPanel mystd;
     init_color(COLOR_ORANGE, 999, 500, 0);
-    init_pair(7, COLOR_WHITE, COLOR_ORANGE);
+    init_pair(7, COLOR_WHITE, COLOR_ORANGE); // TODO Doesn't appear to work
 //    init_pair(0, COLOR_MAGENTA, COLOR_RED); // Unknown
 //    init_pair(1, COLOR_MAGENTA, COLOR_RED); // Unknown
     init_pair(2, COLOR_YELLOW, COLOR_BLACK); // Selection cursor in Menu
@@ -330,12 +376,12 @@ int TestApplication::run()
     // Event Window
     const int PAD_LENGTH = 250;
     NCursesPanel P(mystd.lines()-2, mystd.cols()-2, 1, 1);
-    ChildPad FP(P, PAD_LENGTH, mystd.cols() - 3);
+    ChildPad EP(P, PAD_LENGTH, mystd.cols() - 3);
     P.label("Events", NULL);
-    FP();
-    while(true) {
-
-    }
+    EP(); // TODO Can we have pad show up with while loop in parent view?
+//    while(true) {
+//
+//    }
 //  MyMenu M;
 //  M();
   return 0;

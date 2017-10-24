@@ -35,6 +35,22 @@ void Actor::setNextAct(long newAct)
     nextAct = newAct;
 }
 
+Actor::~Actor()
+{
+    //dtor
+}
+
+Event::Event(std::string message)
+{
+    baseMessage = message;
+}
+
+std::string Event::getMessage()
+{
+    return baseMessage;
+}
+
+
 Scheduler::Scheduler()
 {
 //    auto cmp = [](int left, int right) { return (left ^ 1) < (right ^ 1);};
@@ -75,7 +91,10 @@ void Scheduler::goFor(long duration)
     until(curTime + duration);
 }
 
-Actor::~Actor()
+void Scheduler::postEvent(const Event& event)
 {
-    //dtor
+
 }
+
+
+
