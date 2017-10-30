@@ -64,7 +64,7 @@ private:
     bool sunIsUp;
 public:
     // TODO Set up state.
-    void act(Scheduler scheduler) {
+    void act(Scheduler& scheduler) {
         std:string msg;
         if(!sunIsUp) {
             msg = "The sun rises.";
@@ -181,16 +181,24 @@ class ChildPad : public NCursesFramedPad {
 
 // TODO When I try to subclass ChildPad window doesn't appear.
 class EventPad : public NCursesFramedPad {
+private:
+    bool (*inputCallback)(int key);
     public:
-        EventPad(NCursesWindow& win, int nlines, int ncols): NCursesFramedPad(win, nlines, ncols){}
-
+        EventPad(NCursesWindow& win, int nlines, int ncols, bool (*input)(int key)): NCursesFramedPad(win, nlines, ncols), inputCallback(input) {}
+    protected:
+        virtual int driver (int key);
 //        void operator ()(void) {
-//            bool quit = false;
-//            while(!quit) {
-//
-//            }
+
 //        }
 };
+
+int EventPad::driver(int key) {
+    bool status = inputCallback(key);
+    printw("This line created by EventPad::driver\n");
+    refresh();
+    // TODO Don't return if don't want to
+    return NCursesFramedPad::driver(key);
+}
 
 //class PassiveItem : public NCursesMenuItem
 //{
@@ -310,6 +318,7 @@ protected:
   Soft_Label_Key_Set::Label_Layout useSLKs() const {
     return Soft_Label_Key_Set::PC_Style_With_Index;
   }
+  // TODO Re enable
 //  void init_labels(Soft_Label_Key_Set& S) const;
 
 public:
@@ -346,6 +355,11 @@ void TestApplication::title()
   titleWindow->noutrefresh();
 }
 
+bool appInput(int key) {
+    // TODO Stuff
+    return false;
+}
+
 int TestApplication::run()
 {
     // Simulations
@@ -357,7 +371,7 @@ int TestApplication::run()
     cout << village->toString() << endl;
 
     NCursesPanel mystd;
-    init_color(COLOR_ORANGE, 999, 500, 0);
+    init_color(COLOR_ORANGE, 999, 500, 0); // TODO Doesn't appear to work
     init_pair(7, COLOR_WHITE, COLOR_ORANGE); // TODO Doesn't appear to work
 //    init_pair(0, COLOR_MAGENTA, COLOR_RED); // Unknown
 //    init_pair(1, COLOR_MAGENTA, COLOR_RED); // Unknown
@@ -376,7 +390,7 @@ int TestApplication::run()
     // Event Window
     const int PAD_LENGTH = 250;
     NCursesPanel P(mystd.lines()-2, mystd.cols()-2, 1, 1);
-    ChildPad EP(P, PAD_LENGTH, mystd.cols() - 3);
+    EventPad EP(P, PAD_LENGTH, mystd.cols() - 3, appInput);
     P.label("Events", NULL);
     EP(); // TODO Can we have pad show up with while loop in parent view?
 //    while(true) {
