@@ -45,8 +45,8 @@ class VillageFactory {
 public:
     VillageFactory(WorldMap* worldMap, int seed) {
         theMap = worldMap;
-        int curSeed = seed >= 0 ? seed : time(NULL); // Use seed if provided, else random
-        srand(curSeed);
+        long curSeed = seed >= 0 ? seed : time(NULL); // Use seed if provided, else random
+        srand(static_cast<unsigned int>(curSeed));
     }
 private:
     WorldMap* theMap;
@@ -303,8 +303,7 @@ class EventPad : public NCursesFramedPad {
 //  }
 //};
 
-class TestApplication : public NCursesApplication
-{
+class TestApplication : public NCursesApplication {
 protected:
   int titlesize() const { return 1; }
   void title();
@@ -351,7 +350,8 @@ int TestApplication::run()
 {
     // Simulations
     cout << "BEGIN PROGRAM" << endl;
-    WorldMap theMap (3600, 3600);
+    Scheduler scheduler;
+    WorldMap theMap (3600, 3600, scheduler);
     VillageFactory villageFactory (&theMap, -1);
     Village *village = villageFactory.build();
     cout << village->toString() << endl;
