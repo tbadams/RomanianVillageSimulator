@@ -11,6 +11,7 @@
 #include <menu.h>
 
 #include "WorldMap.h"
+#include "Romania.h"
 
 #ifndef __MINGW32__
 extern "C" unsigned int sleep(unsigned int); // TODO Make portable??
@@ -34,49 +35,6 @@ const int COLOR_ORANGE = 9;
 
 void doStuff(int key);
 
-class Village : public Place {
-public:
-    Village(int xCoord,int yCoord):Place(xCoord,yCoord) {}
-    // Todo width, height
-
-};
-
-class VillageFactory {
-public:
-    VillageFactory(WorldMap* worldMap, int seed) {
-        theMap = worldMap;
-        long curSeed = seed >= 0 ? seed : time(NULL); // Use seed if provided, else random
-        srand(static_cast<unsigned int>(curSeed));
-    }
-private:
-    WorldMap* theMap;
-    public:
-    Village * build();
-};
-
-Village* VillageFactory::build() {
-
-    return new Village(rand() % (theMap->getWidth()-1), rand() % (theMap->getHeight()-1));
-}
-
-class DayTime : public Actor {
-private:
-    bool sunIsUp;
-public:
-    // TODO Set up state.
-    void act(Scheduler& scheduler) {
-        std:string msg;
-        if(!sunIsUp) {
-            msg = "The sun rises.";
-        } else {
-            msg = "The sun sets.";
-        }
-        sunIsUp = !sunIsUp;
-        Event event (msg);
-        scheduler.postEvent(event);
-        scheduler.add(*this, 60 * 24);
-    }
-};
 
 
 /*

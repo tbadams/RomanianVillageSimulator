@@ -54,7 +54,12 @@
 		<Linker>
 			<Add directory="lib/ncurses" />
 		</Linker>
+		<Unit filename="demo.cc">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="include/Actor.h" />
+		<Unit filename="include/Romania.h" />
 		<Unit filename="include/WorldMap.h" />
 		<Unit filename="lib/ncurses/c++/cursesapp.h" />
 		<Unit filename="lib/ncurses/c++/cursesf.h" />
@@ -65,7 +70,13 @@
 		<Unit filename="lib/ncurses/c++/etip.h" />
 		<Unit filename="lib/ncurses/c++/internal.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="main_headless.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+			<Option target="Debug" />
+		</Unit>
 		<Unit filename="src/Actor.cpp" />
+		<Unit filename="src/Romania.cpp" />
 		<Unit filename="src/WorldMap.cpp" />
 		<Extensions>
 			<code_completion />
