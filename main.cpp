@@ -312,6 +312,9 @@ int EventPad::driver(int key) {
 //};
 
 class TestApplication : public NCursesApplication {
+private:
+    Scheduler scheduler;
+    WorldMap theMap;
 protected:
   int titlesize() const { return 1; }
   void title();
@@ -322,8 +325,7 @@ protected:
 //  void init_labels(Soft_Label_Key_Set& S) const;
 
 public:
-  TestApplication() : NCursesApplication(TRUE) {
-  }
+  TestApplication() : NCursesApplication(TRUE), scheduler (), theMap(3600, 3600, scheduler) {}
     void virtualize(int);
   int run();
 };
@@ -364,8 +366,6 @@ int TestApplication::run()
 {
     // Simulations
     cout << "BEGIN PROGRAM" << endl;
-    Scheduler scheduler;
-    WorldMap theMap (3600, 3600, scheduler);
     VillageFactory villageFactory (&theMap, -1);
     Village *village = villageFactory.build();
     cout << village->toString() << endl;
