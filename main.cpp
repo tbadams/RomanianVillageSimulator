@@ -17,8 +17,6 @@
 extern "C" unsigned int sleep(unsigned int); // TODO Make portable??
 #endif
 
-using namespace std;
-
 // Can define 256 colors
 /*
 9 - bright red
@@ -364,10 +362,33 @@ int TestApplication::run()
 //
 static TestApplication *Demo = new TestApplication();
 
+int headless_run()
+{
+    using std::cout;
+    using std::endl;
+    using std::cin;
+
+    cout << "BEGIN PROGRAM" << endl;
+    Scheduler scheduler;
+    WorldMap theMap (3600, 3600, scheduler);
+    VillageFactory villageFactory (&theMap, -1);
+    Village *village = villageFactory.build();
+    cout << village->toString() << endl;
+    DayTime sun;
+    scheduler.add(sun, 0);
+
+    // Input gate
+    int i;
+    while(i >= 0) {
+        cin >> i;
+        scheduler.goFor(60);
+    }
 
 
-//int main()
-//{
+}
 
-//    return 0;
-//}
+// TODO Use IFDEF to enable/disable
+int main()
+{
+    return headless_run();
+}
