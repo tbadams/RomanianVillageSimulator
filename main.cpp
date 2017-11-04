@@ -11,12 +11,17 @@
 #include <menu.h>
 
 #include "WorldMap.h"
+#include "Romania.h"
 
 #ifndef __MINGW32__
 extern "C" unsigned int sleep(unsigned int); // TODO Make portable??
 #endif
 
-using namespace std;
+/*
+GLOBAL TODOS:
+    Add logging framework
+    Add Unit test framework
+*/
 
 // Can define 256 colors
 /*
@@ -34,49 +39,6 @@ const int COLOR_ORANGE = 9;
 
 void doStuff(int key);
 
-class Village : public Place {
-public:
-    Village(int xCoord,int yCoord):Place(xCoord,yCoord) {}
-    // Todo width, height
-
-};
-
-class VillageFactory {
-public:
-    VillageFactory(WorldMap* worldMap, int seed) {
-        theMap = worldMap;
-        long curSeed = seed >= 0 ? seed : time(NULL); // Use seed if provided, else random
-        srand(static_cast<unsigned int>(curSeed));
-    }
-private:
-    WorldMap* theMap;
-    public:
-    Village * build();
-};
-
-Village* VillageFactory::build() {
-
-    return new Village(rand() % (theMap->getWidth()-1), rand() % (theMap->getHeight()-1));
-}
-
-class DayTime : public Actor {
-private:
-    bool sunIsUp;
-public:
-    // TODO Set up state.
-    void act(Scheduler scheduler) {
-        std:string msg;
-        if(!sunIsUp) {
-            msg = "The sun rises.";
-        } else {
-            msg = "The sun sets.";
-        }
-        sunIsUp = !sunIsUp;
-        Event event (msg);
-        scheduler.postEvent(event);
-        scheduler.add(*this, 60 * 24);
-    }
-};
 
 
 /*
@@ -181,16 +143,24 @@ class ChildPad : public NCursesFramedPad {
 
 // TODO When I try to subclass ChildPad window doesn't appear.
 class EventPad : public NCursesFramedPad {
+private:
+    bool (*inputCallback)(int key);
     public:
-        EventPad(NCursesWindow& win, int nlines, int ncols): NCursesFramedPad(win, nlines, ncols){}
-
+        EventPad(NCursesWindow& win, int nlines, int ncols, bool (*input)(int key)): NCursesFramedPad(win, nlines, ncols), inputCallback(input) {}
+    protected:
+        virtual int driver (int key);
 //        void operator ()(void) {
-//            bool quit = false;
-//            while(!quit) {
-//
-//            }
+
 //        }
 };
+
+int EventPad::driver(int key) {
+    bool status = inputCallback(key);
+    printw("This line created by EventPad::driver\n");
+    refresh();
+    // TODO Don't return if don't want to
+    return NCursesFramedPad::driver(key);
+}
 
 //class PassiveItem : public NCursesMenuItem
 //{
@@ -304,17 +274,20 @@ class EventPad : public NCursesFramedPad {
 //};
 
 class TestApplication : public NCursesApplication {
+private:
+    Scheduler scheduler;
+    WorldMap theMap;
 protected:
   int titlesize() const { return 1; }
   void title();
   Soft_Label_Key_Set::Label_Layout useSLKs() const {
     return Soft_Label_Key_Set::PC_Style_With_Index;
   }
+  // TODO Re enable
 //  void init_labels(Soft_Label_Key_Set& S) const;
 
 public:
-  TestApplication() : NCursesApplication(TRUE) {
-  }
+  TestApplication() : NCursesApplication(TRUE), scheduler (), theMap(3600, 3600, scheduler) {}
     void virtualize(int);
   int run();
 };
@@ -346,18 +319,24 @@ void TestApplication::title()
   titleWindow->noutrefresh();
 }
 
+bool appInput(int key) {
+    // TODO Stuff
+    return false;
+}
+
 int TestApplication::run()
 {
+    using std::cout;
+    using std::endl;
+
     // Simulations
     cout << "BEGIN PROGRAM" << endl;
-    Scheduler scheduler;
-    WorldMap theMap (3600, 3600, scheduler);
     VillageFactory villageFactory (&theMap, -1);
     Village *village = villageFactory.build();
     cout << village->toString() << endl;
 
     NCursesPanel mystd;
-    init_color(COLOR_ORANGE, 999, 500, 0);
+    init_color(COLOR_ORANGE, 999, 500, 0); // TODO Doesn't appear to work
     init_pair(7, COLOR_WHITE, COLOR_ORANGE); // TODO Doesn't appear to work
 //    init_pair(0, COLOR_MAGENTA, COLOR_RED); // Unknown
 //    init_pair(1, COLOR_MAGENTA, COLOR_RED); // Unknown
@@ -376,7 +355,7 @@ int TestApplication::run()
     // Event Window
     const int PAD_LENGTH = 250;
     NCursesPanel P(mystd.lines()-2, mystd.cols()-2, 1, 1);
-    ChildPad EP(P, PAD_LENGTH, mystd.cols() - 3);
+    EventPad EP(P, PAD_LENGTH, mystd.cols() - 3, appInput);
     P.label("Events", NULL);
     EP(); // TODO Can we have pad show up with while loop in parent view?
 //    while(true) {
@@ -392,10 +371,33 @@ int TestApplication::run()
 //
 static TestApplication *Demo = new TestApplication();
 
+int headless_run()
+{
+    using std::cout;
+    using std::endl;
+    using std::cin;
+
+    cout << "BEGIN PROGRAM" << endl;
+    Scheduler scheduler;
+    WorldMap theMap (3600, 3600, scheduler);
+    VillageFactory villageFactory (&theMap, -1);
+    Village *village = villageFactory.build();
+    cout << village->toString() << endl;
+    DayTime sun;
+    scheduler.add(sun, scheduler.makeTime(0,0,6));
+
+    // Input gate
+    int i {0};
+    while(i >= 0) {
+        cin >> i;
+        scheduler.goFor(i * scheduler.HOUR);
+    }
 
 
-//int main()
-//{
+}
 
-//    return 0;
-//}
+// TODO Use IFDEF to enable/disable
+int main()
+{
+    return headless_run();
+}
