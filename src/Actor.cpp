@@ -9,7 +9,7 @@ Actor::Actor()
 }
 void Actor::act(Scheduler& scheduler)
 {
-    // Override
+        std::cout << "actor action"<< std::endl;
 }
 
 bool operator < (Actor const& lhs, Actor const& rhs)

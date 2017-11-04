@@ -30,7 +30,7 @@ private:
     bool sunIsUp;
 public:
     // TODO Set up state.
-    void act(Scheduler& scheduler);
+    void act(Scheduler& scheduler) override;
 };
 
 

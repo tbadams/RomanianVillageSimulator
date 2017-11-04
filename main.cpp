@@ -384,7 +384,7 @@ int headless_run()
     int i {0};
     while(i >= 0) {
         cin >> i;
-        scheduler.goFor(60);
+        scheduler.goFor(360);
     }
 
 
