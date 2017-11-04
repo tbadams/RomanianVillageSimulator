@@ -29,6 +29,6 @@ void DayTime::act(Scheduler& scheduler)
     sunIsUp = !sunIsUp;
     Event event (msg);
     scheduler.postEvent(event);
-    scheduler.add(*this, 60 * 24);
+    scheduler.add(*this, 60 * 12);
 }
 

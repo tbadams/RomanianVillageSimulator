@@ -77,7 +77,7 @@ void Scheduler::scheduleForTime(Actor& actor, const long absoluteTime)
 {
     std::cout << "Scheduler.scheduleForTime() at " << absoluteTime << std::endl;
     actor.setNextAct(absoluteTime);
-    schedule.push(actor);
+    schedule.push(&actor);
 }
 
 void Scheduler::add(Actor& actor, const int delay)
@@ -89,18 +89,18 @@ void Scheduler::next()
 {
     std::cout << "Scheduler.next()" << std::endl;
     // TODO Empty?
-    Actor next = schedule.top();
-    if(next.nextAct > curTime) {
-        curTime = next.nextAct;
+    Actor *next = schedule.top();
+    if(next->nextAct > curTime) {
+        curTime = next->nextAct;
     }
     schedule.pop();
-    next.act(self());
+    next->act(self());
 }
 
 void Scheduler::until(long absoluteTime)
 {
     std::cout << "Scheduler.until()" << std::endl;
-    while(!schedule.empty() && schedule.top().nextAct <= absoluteTime)
+    while(!schedule.empty() && schedule.top()->nextAct <= absoluteTime)
     {
         next();
     }

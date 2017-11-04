@@ -53,7 +53,7 @@ public:
 
 private:
     long curTime; // TODO necessary? float?
-    std::priority_queue<Actor> schedule;
+    std::priority_queue<Actor*> schedule;
     Scheduler& self() { return *this; }
 };
 
