@@ -105,7 +105,7 @@ void Scheduler::until(long absoluteTime)
         next();
     }
     curTime = absoluteTime;
-    std::cout << "curTime is now " << curTime << std::endl;
+    std::cout << "curTime is now " << formatTime(curTime) << std::endl;
 }
 
 void Scheduler::goFor(long duration)
@@ -115,8 +115,27 @@ void Scheduler::goFor(long duration)
 
 void Scheduler::postEvent(const Event& event)
 {
-    std::cout << curTime << ": " << event.getMessage() << std::endl;
+    std::cout << formatTime(curTime) << " - " << event.getMessage() << std::endl;
 }
 
+long Scheduler::getCurTime()
+{
+    return curTime;
+}
+
+long Scheduler::makeTime(long secs, int mins, int hour, int day)
+{
+    return secs + (MINUTE * mins) + (HOUR * hour) + (DAY * day);
+}
+
+
+std::string Scheduler::formatTime(long time)
+{
+    int day = (time / DAY) + 1;
+    int hour = (time % DAY) / HOUR;
+    int mins = (time % HOUR) / MINUTE;
+    int secs = (time % MINUTE) / SECOND;
+    return "Day " + std::to_string(day) + ", " + std::to_string(hour) + ":" + std::to_string(mins) + ":" + std::to_string(secs);
+}
 
 

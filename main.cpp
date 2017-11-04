@@ -17,6 +17,12 @@
 extern "C" unsigned int sleep(unsigned int); // TODO Make portable??
 #endif
 
+/*
+GLOBAL TODOS:
+    Add logging framework
+    Add Unit test framework
+*/
+
 // Can define 256 colors
 /*
 9 - bright red
@@ -378,13 +384,13 @@ int headless_run()
     Village *village = villageFactory.build();
     cout << village->toString() << endl;
     DayTime sun;
-    scheduler.add(sun, 0);
+    scheduler.add(sun, scheduler.makeTime(0,0,6));
 
     // Input gate
     int i {0};
     while(i >= 0) {
         cin >> i;
-        scheduler.goFor(360);
+        scheduler.goFor(i * scheduler.HOUR);
     }
 
 
