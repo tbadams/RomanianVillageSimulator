@@ -7,10 +7,11 @@ Actor::Actor()
 {
 
 }
-void Actor::act(Scheduler& scheduler)
-{
-        std::cout << "actor action"<< std::endl;
-}
+
+//void Actor::act(Scheduler& scheduler)
+//{
+//        std::cout << "actor action"<< std::endl;
+//}
 
 bool operator < (Actor const& lhs, Actor const& rhs)
 {
@@ -75,7 +76,7 @@ Scheduler::Scheduler(long startTime) : curTime {startTime}, schedule {}
 
 void Scheduler::scheduleForTime(Actor& actor, const long absoluteTime)
 {
-    std::cout << "Scheduler.scheduleForTime() at " << absoluteTime << std::endl;
+//    std::cout << "Scheduler.scheduleForTime() at " << formatTime(absoluteTime) << std::endl;
     actor.setNextAct(absoluteTime);
     schedule.push(&actor);
 }
@@ -87,7 +88,7 @@ void Scheduler::add(Actor& actor, const int delay)
 
 void Scheduler::next()
 {
-    std::cout << "Scheduler.next()" << std::endl;
+//    std::cout << "Scheduler.next()" << std::endl;
     // TODO Empty?
     Actor *next = schedule.top();
     if(next->nextAct > curTime) {
@@ -99,7 +100,7 @@ void Scheduler::next()
 
 void Scheduler::until(long absoluteTime)
 {
-    std::cout << "Scheduler.until()" << std::endl;
+//    std::cout << "Scheduler.until()" << std::endl;
     while(!schedule.empty() && schedule.top()->nextAct <= absoluteTime)
     {
         next();
@@ -115,7 +116,7 @@ void Scheduler::goFor(long duration)
 
 void Scheduler::postEvent(const Event& event)
 {
-    std::cout << formatTime(curTime) << " - " << event.getMessage() << std::endl;
+    std::cout << formatTime(curTime) << "-\t" << event.getMessage() << std::endl;
 }
 
 long Scheduler::getCurTime()
@@ -128,6 +129,15 @@ long Scheduler::makeTime(long secs, int mins, int hour, int day)
     return secs + (MINUTE * mins) + (HOUR * hour) + (DAY * day);
 }
 
+// Turn integer input into "0x" for clock readout.
+std::string digitify(long input)
+{
+    if(input >= 0 && input < 10) {
+        return "0" + std::to_string(input);
+    }
+    return std::to_string(input);
+}
+
 
 std::string Scheduler::formatTime(long time)
 {
@@ -135,7 +145,7 @@ std::string Scheduler::formatTime(long time)
     int hour = (time % DAY) / HOUR;
     int mins = (time % HOUR) / MINUTE;
     int secs = (time % MINUTE) / SECOND;
-    return "Day " + std::to_string(day) + ", " + std::to_string(hour) + ":" + std::to_string(mins) + ":" + std::to_string(secs);
+    return "Day " + std::to_string(day) + ", " + digitify(hour) + ":" + digitify(mins) + ":" + digitify(secs);
 }
 
 
