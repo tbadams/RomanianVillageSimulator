@@ -2,6 +2,7 @@
 #define ACTOR_H
 #include <string>
 #include <queue>
+#include <iostream>
 
 class Scheduler;
 
@@ -11,7 +12,7 @@ class Event {
     // TODO Timestamp???
 public:
     Event(std::string);
-    std::string getMessage();
+    std::string getMessage() const;
 private:
     std::string baseMessage;
 
@@ -42,6 +43,7 @@ class Scheduler
 {
 public:
     Scheduler();
+    Scheduler(long startTime);
     void add(Actor& actor, const int delay);
     void scheduleForTime(Actor& actor, const long absoluteTime);
     void next();

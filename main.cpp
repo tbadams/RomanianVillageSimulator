@@ -320,6 +320,9 @@ bool appInput(int key) {
 
 int TestApplication::run()
 {
+    using std::cout;
+    using std::endl;
+
     // Simulations
     cout << "BEGIN PROGRAM" << endl;
     VillageFactory villageFactory (&theMap, -1);
@@ -378,7 +381,7 @@ int headless_run()
     scheduler.add(sun, 0);
 
     // Input gate
-    int i;
+    int i {0};
     while(i >= 0) {
         cin >> i;
         scheduler.goFor(60);

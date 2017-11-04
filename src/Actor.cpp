@@ -1,5 +1,8 @@
 #include "Actor.h"
 
+/*
+    Actor
+*/
 Actor::Actor()
 {
 
@@ -15,6 +18,9 @@ bool operator < (Actor const& lhs, Actor const& rhs)
 }
 
 bool operator > (Actor const& lhs, Actor const& rhs)
+/*
+    Event
+*/
 {
     return lhs.nextAct > rhs.nextAct;
 }
@@ -45,7 +51,7 @@ Event::Event(std::string message)
     baseMessage = message;
 }
 
-std::string Event::getMessage()
+std::string Event::getMessage() const
 {
     return baseMessage;
 }
