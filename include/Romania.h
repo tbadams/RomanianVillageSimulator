@@ -1,6 +1,7 @@
 #ifndef ROMANIA_H
 #define ROMANIA_H
 
+#include <iostream>
 #include <string.h>
 #include <stdlib.h>
 
