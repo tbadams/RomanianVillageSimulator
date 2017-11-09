@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "Being.h"
 #include "WorldMap.h"
 
 class Village : public Place {
@@ -20,7 +21,7 @@ public:
 private:
     WorldMap* theMap;
     public:
-    Village * build();
+    Village build();
 };
 
 

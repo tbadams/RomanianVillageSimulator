@@ -332,8 +332,8 @@ int TestApplication::run()
     // Simulations
     cout << "BEGIN PROGRAM" << endl;
     VillageFactory villageFactory (&theMap, -1);
-    Village *village = villageFactory.build();
-    cout << village->toString() << endl;
+    Village village = villageFactory.build();
+    cout << village.toString() << endl;
 
     NCursesPanel mystd;
     init_color(COLOR_ORANGE, 999, 500, 0); // TODO Doesn't appear to work
@@ -378,11 +378,15 @@ int headless_run()
     using std::cin;
 
     cout << "BEGIN PROGRAM" << endl;
+    std::mt19937 rng;
+    rng.seed(std::random_device()());
     Scheduler scheduler;
     WorldMap theMap (3600, 3600, scheduler);
-    VillageFactory villageFactory (&theMap, -1);
-    Village *village = villageFactory.build();
-    cout << village->toString() << endl;
+    VillageFactory villageFactory (&theMap, -1); // TODO reuse rng
+    Village village = villageFactory.build();
+    cout << village.toString() << endl;
+    Being testVillager {"Test Villager", village, rng}; // TODO Maybe village shouldn't extend Place.
+    scheduler.add(testVillager, 0);
     DayTime sun;
     scheduler.add(sun, scheduler.makeTime(0,0,6));
 

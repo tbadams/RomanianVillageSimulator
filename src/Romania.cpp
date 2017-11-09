@@ -12,8 +12,8 @@ VillageFactory::VillageFactory(WorldMap* worldMap, int seed)
     srand(static_cast<unsigned int>(curSeed)); // TODO Don't use srand
 }
 
-Village* VillageFactory::build() {
-    return new Village(rand() % (theMap->getWidth()-1), rand() % (theMap->getHeight()-1));
+Village VillageFactory::build() {
+    return Village {rand() % (theMap->getWidth()-1), rand() % (theMap->getHeight()-1)};
 }
 
 
