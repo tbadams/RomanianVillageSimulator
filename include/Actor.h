@@ -22,7 +22,7 @@ class Actor {
     friend class Scheduler;
     public:
         Actor();
-        virtual void act(Scheduler& scheduler);
+        virtual void act(Scheduler& scheduler) = 0;
         friend bool operator< ( Actor const& a, Actor const& b);
         friend bool operator== ( Actor const& a, Actor const& b);
         friend bool operator> ( Actor const& a, Actor const& b);

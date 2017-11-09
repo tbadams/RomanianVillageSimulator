@@ -9,7 +9,7 @@ VillageFactory::VillageFactory(WorldMap* worldMap, int seed)
 {
     theMap = worldMap;
     long curSeed = seed >= 0 ? seed : time(NULL); // Use seed if provided, else random
-    srand(static_cast<unsigned int>(curSeed));
+    srand(static_cast<unsigned int>(curSeed)); // TODO Don't use srand
 }
 
 Village* VillageFactory::build() {

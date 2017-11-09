@@ -59,6 +59,7 @@
 			<Option link="0" />
 		</Unit>
 		<Unit filename="include/Actor.h" />
+		<Unit filename="include/Being.h" />
 		<Unit filename="include/Romania.h" />
 		<Unit filename="include/WorldMap.h" />
 		<Unit filename="lib/ncurses/c++/cursesapp.h" />
@@ -76,6 +77,7 @@
 			<Option target="Debug" />
 		</Unit>
 		<Unit filename="src/Actor.cpp" />
+		<Unit filename="src/Being.cpp" />
 		<Unit filename="src/Romania.cpp" />
 		<Unit filename="src/WorldMap.cpp" />
 		<Extensions>

@@ -389,6 +389,7 @@ int headless_run()
     // Input gate
     int i {0};
     while(i >= 0) {
+        cout << "Enter # of hours to pass:\n";
         cin >> i;
         scheduler.goFor(i * scheduler.HOUR);
     }

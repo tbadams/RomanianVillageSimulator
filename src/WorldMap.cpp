@@ -7,7 +7,7 @@ Place::Place(int xCoord, int yCoord)
     y = yCoord;
 }
 
-std::string Place::toString()
+std::string Place::toString() const
 {
     return "(" + std::to_string(x) + ", " + std::to_string(y) + ")";
 }

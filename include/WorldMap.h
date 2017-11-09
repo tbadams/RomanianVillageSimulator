@@ -16,10 +16,10 @@ private:
 public:
     Place(int,int);
 
-    int getX(){return x;}
-    int getY(){return y;}
+    int getX() const {return x;}
+    int getY() const {return y;}
     void add(Place place);
-    std::string toString();
+    std::string toString() const;
 };
 
 class TimeController {
