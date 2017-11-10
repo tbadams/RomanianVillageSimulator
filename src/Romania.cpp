@@ -19,7 +19,7 @@ Village VillageFactory::build() {
 
 void DayTime::act(Scheduler& scheduler)
 {
-//    std::cout << "DayTime act" << std::endl;
+    std::cout << "DayTime act" << std::endl;
     std::string msg;
     if(!sunIsUp) {
         msg = "The sun rises.";
@@ -27,7 +27,7 @@ void DayTime::act(Scheduler& scheduler)
         msg = "The sun sets.";
     }
     sunIsUp = !sunIsUp;
-    Event event (msg);
+    Event event {msg};
     scheduler.postEvent(event);
     scheduler.add(*this, scheduler.makeTime(0,0,12));
 }

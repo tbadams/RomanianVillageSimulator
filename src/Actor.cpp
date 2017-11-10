@@ -65,8 +65,7 @@ std::string Event::getMessage() const
 */
 Scheduler::Scheduler() : Scheduler(0)
 {
-//    auto cmp = [](int left, int right) { return (left ^ 1) < (right ^ 1);};
-//    std::priority_queue<int, std::vector<int>, decltype(cmp)> q3(cmp);
+
 }
 
 Scheduler::Scheduler(long startTime) : curTime {startTime}, schedule {}
@@ -76,7 +75,7 @@ Scheduler::Scheduler(long startTime) : curTime {startTime}, schedule {}
 
 void Scheduler::scheduleForTime(Actor& actor, const long absoluteTime)
 {
-//    std::cout << "Scheduler.scheduleForTime() at " << formatTime(absoluteTime) << std::endl;
+    std::cout << "Scheduler.scheduleForTime() at " << formatTime(absoluteTime) << std::endl;
     actor.setNextAct(absoluteTime);
     schedule.push(&actor);
 }
@@ -88,7 +87,7 @@ void Scheduler::add(Actor& actor, const int delay)
 
 void Scheduler::next()
 {
-//    std::cout << "Scheduler.next()" << std::endl;
+    std::cout << "Scheduler.next()" << std::endl;
     // TODO Empty?
     Actor *next = schedule.top();
     if(next->nextAct > curTime) {
@@ -100,7 +99,7 @@ void Scheduler::next()
 
 void Scheduler::until(long absoluteTime)
 {
-//    std::cout << "Scheduler.until()" << std::endl;
+    std::cout << "Scheduler.until()" << std::endl;
     while(!schedule.empty() && schedule.top()->nextAct <= absoluteTime)
     {
         next();

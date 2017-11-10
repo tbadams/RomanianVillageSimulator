@@ -386,7 +386,7 @@ int headless_run()
     Village village = villageFactory.build();
     cout << village.toString() << endl;
     Being testVillager {"Test Villager", village, rng}; // TODO Maybe village shouldn't extend Place.
-    scheduler.add(testVillager, 0);
+    scheduler.add(testVillager, scheduler.makeTime(0,0,6));
     DayTime sun;
     scheduler.add(sun, scheduler.makeTime(0,0,6));
 
